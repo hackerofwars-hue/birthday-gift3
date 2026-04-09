@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For You ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+    --accent: #ff4d6d;
+    --bg1: #0f2027;
+    --bg2: #203a43;
+    --bg3: #2c5364;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(120deg, var(--bg1), var(--bg2), var(--bg3));
+    color: white;
+}
+
+/* APP CONTAINER */
+#app {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CARD */
+.card {
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    background: rgba(255,255,255,0.08);
+    box-shadow: 0 0 40px rgba(0,0,0,0.3);
+    text-align: center;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: 0.6s;
+}
+
+.card.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* BUTTON */
+button {
+    margin-top: 20px;
+    padding: 12px 30px;
+    border-radius: 30px;
+    border: none;
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.08);
+}
+
+/* TEXT */
+.text {
+    font-size: 20px;
+    line-height: 1.6;
+    min-height: 80px;
+}
+
+/* FINAL */
+.final {
+    font-size: 28px;
+    color: #ffccd5;
+    text-shadow: 0 0 20px var(--accent);
+}
+
+/* PARTICLES */
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+
+<div id="app">
+
+    <div class="card active" id="scene0">
+        <h2>🎁 A Special Surprise</h2>
+        <p class="text">Click below… but slowly ❤️</p>
+        <button onclick="nextScene()">Start</button>
+    </div>
+
+    <div class="card" id="scene1">
+        <p class="text" id="text1"></p>
+        <button onclick="nextScene()">Continue</button>
+    </div>
+
+    <div class="card" id="scene2">
+        <p class="text" id="text2"></p>
+        <button onclick="nextScene()">Next</button>
+    </div>
+
+    <div class="card" id="scene3">
+        <p class="text" id="text3"></p>
+        <button onclick="nextScene()">Final</button>
+    </div>
+
+    <div class="card final" id="scene4">
+        ❤️ Happy Birthday ❤️ <br>
+        You are my favorite feeling forever 💖
+    </div>
+
+</div>
+
+<script>
+
+/* ======================
+   SCENE SYSTEM
+====================== */
+let current = 0;
+const scenes = document.querySelectorAll(".card");
+
+function nextScene() {
+    scenes[current].classList.remove("active");
+    current++;
+    scenes[current].classList.add("active");
+
+    if(current === 1)
+        type("text1", "Out of everyone in this world... my heart stopped at you.");
+    if(current === 2)
+        type("text2", "Your smile became my peace, your voice became my favorite sound.");
+    if(current === 3)
+        type("text3", "And today... I just want to remind you how special you are to me.");
+}
+
+/* ======================
+   TYPING ENGINE
+====================== */
+function type(id, text) {
+    const el = document.getElementById(id);
+    el.innerHTML = "";
+    let i = 0;
+
+    const speed = 35;
+
+    function run() {
+        if(i < text.length) {
+            el.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(run, speed);
+        }
+    }
+    run();
+}
+
+/* ======================
+   PARTICLE SYSTEM
+====================== */
+const canvas = document.getElementById("bg");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for(let i=0;i<60;i++){
+    particles.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        size: Math.random()*3+1,
+        speed: Math.random()*1+0.3
+    });
+}
+
+function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    ctx.fillStyle = "rgba(255,100,150,0.7)";
+
+    particles.forEach(p=>{
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+        ctx.fill();
+
+        p.y -= p.speed;
+        if(p.y < 0) p.y = canvas.height;
+    });
+
+    requestAnimationFrame(draw);
+}
+
+draw();
+
+/* Responsive */
+window.onresize = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+};
+
+</script>
+
+</body>
+</html>
